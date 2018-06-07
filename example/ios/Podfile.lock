@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - posixerror (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Pods/.symlinks/flutter/ios`)
+  - posixerror (from `Pods/.symlinks/plugins/posixerror/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Pods/.symlinks/flutter/ios
+  posixerror:
+    :path: Pods/.symlinks/plugins/posixerror/ios
+
+SPEC CHECKSUMS:
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  posixerror: 052037ced3121c5412a90562b17fe3040de323bb
+
+PODFILE CHECKSUM: 13dcf421f4da2e937a57e8ba760ed880beae536f
+
+COCOAPODS: 1.5.3
