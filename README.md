@@ -1,10 +1,7 @@
 # posixerror
 
-A new flutter plugin project.
+This demonstrates an issue with NSURLSession's discretionary property and building with Android Studio vs XCode on the iOS simulator.
 
 ## Getting Started
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
-
-For help on editing plugin code, view the [documentation](https://flutter.io/platform-plugins/#edit-code).
+See the comments here: [PosixerrorPlugin.m](https://github.com/tomnewton/posixerror/blob/master/ios/Classes/PosixerrorPlugin.m#L27-L49).

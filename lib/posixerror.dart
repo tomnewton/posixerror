@@ -7,6 +7,6 @@ class Posixerror {
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
-    return "test";
+    return version;
   }
 }
