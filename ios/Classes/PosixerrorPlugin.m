@@ -21,55 +21,42 @@
 
 -(void)runBackgroundDownload {
     NSURLSessionConfiguration* config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"MY_EXAMPLE_IDENTIFIER"];
-    [config setDiscretionary:NO];
     [config setSessionSendsLaunchEvents:YES];
+    
+    
+    // NOTE: If you set [config setDiscretionary:NO]; you don't have any issues
+    // whatsoever.
+    
+    //
+    // THE ISSUE:
+    //
+    // If you set [config setDiscretionary:YES]; you get an NSPOSIXErrorDomain error
+    // for any URL that REDIRECTS when you build and run from Android Studio?!?!?
+    // If you build and run this from XCode - no error!
+    
+    // To demonstrate:
+    [config setDiscretionary:YES];
+    
+    // Config 1: This url does NOT redirect - so works whether or not you build and run from Android Studio
+    // or XCode.
+    //NSURL* url = [NSURL URLWithString:@"https://dcs.megaphone.fm/GLT8678602522.mp3?key=c6acd2ee217fb8c6ab3fabb9be0920e0"];
+    // END
+    
+    // Config 2: This url DOES redirect.
+    // 1) Build and run from XCode and everything runs just fine.
+    // 2) Build and run from Android Studio, Fails with NSPOSIXErrorDoman invalid argument.
+    NSURL* url = [NSURL URLWithString:@"https://traffic.megaphone.fm/GLT8678602522.mp3"];
+    // END Config 2.
+    
     NSURLSession* session = [NSURLSession sessionWithConfiguration:config delegate:(id<NSURLSessionDelegate>)self delegateQueue:nil];
     
-    // works
-    // @"https://ia800500.us.archive.org/5/items/aesop_fables_volume_one_librivox/fables_01_00_aesop.mp3"
     
-    // redirects - doesn't work
-    // @"https://traffic.megaphone.fm/GLT8678602522.mp3";
-    // 10 MB file
-    
-    NSURL* url = [NSURL URLWithString:@"https://traffic.megaphone.fm/GLT8678602522.mp3"];
-    
-    NSLog(@"URL we're trying is: %@", url.absoluteString);
+    NSLog(@"URL we're loading is: %@", url.absoluteString);
     
     
     NSURLSessionDownloadTask* task = [session downloadTaskWithURL:url];
     
-    if (@available(iOS 11, *)){
-        //iOS 11 on we can let the system know how much data to expect.
-        
-        //Build a URL HEAD request so we can quickly fetch the headers...
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-        request.HTTPMethod = @"HEAD";
-        [request addValue:@"identity" forHTTPHeaderField:@"Accept-Encoding"]; //force apache to send content-length
-        
-        NSURLSession* sSession = [NSURLSession sharedSession];
-        
-        [[sSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            // handle response
-            if ([response respondsToSelector:@selector(allHeaderFields)]) {
-                NSDictionary *dictionary = [(NSHTTPURLResponse*)response allHeaderFields];
-                //NSLog([dictionary description]);
-                NSLog(@"Content-length: %@", [dictionary objectForKey:@"Content-Length"]);
-                
-                NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-                formatter.numberStyle = NSNumberFormatterDecimalStyle;
-                NSNumber* size = [formatter numberFromString:[dictionary objectForKey:@"Content-Length"]];
-                
-                [task setCountOfBytesClientExpectsToReceive:[size longLongValue]];
-                /// kick it off.
-                NSLog(@"kicking off job");
-                [task resume];
-            }
-        }] resume];
-    } else {
-        [task resume];
-    }
-    
+    [task resume];
 }
 
 - (void)URLSession:(nonnull NSURLSession *)session
